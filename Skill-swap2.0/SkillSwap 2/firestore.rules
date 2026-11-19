@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+
+    match /students/{uid} {
+      // Student profiles are visible only to signed-in users.
+      allow read: if signedIn();
+      allow create: if isOwner(uid)
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.teach is list
+        && request.resource.data.learn is list;
+      allow update: if isOwner(uid)
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.teach is list
+        && request.resource.data.learn is list;
+      allow delete: if isOwner(uid);
+    }
+
+    match /requests/{requestId} {
+      // Request participants can read their own request.
+      allow read: if signedIn()
+        && request.auth.uid in resource.data.participants;
+
+      // Sender must be the signed-in user; only a request involving two distinct users is allowed.
+      allow create: if signedIn()
+        && request.resource.data.fromUid == request.auth.uid
+        && request.resource.data.toUid is string
+        && request.resource.data.toUid != request.auth.uid
+        && request.resource.data.toName is string
+        && request.resource.data.fromName is string
+        && request.resource.data.message is string
+        && request.resource.data.message.size() <= 1000
+        && request.resource.data.status == "pending"
+        && request.resource.data.participants is list
+        && request.resource.data.participants.size() == 2
+        && request.auth.uid in request.resource.data.participants
+        && request.resource.data.toUid in request.resource.data.participants;
+
+      // Only the recipient can change status; all identity/message fields must remain unchanged.
+      allow update: if signedIn()
+        && request.auth.uid == resource.data.toUid
+        && request.resource.data.fromUid == resource.data.fromUid
+        && request.resource.data.toUid == resource.data.toUid
+        && request.resource.data.fromName == resource.data.fromName
+        && request.resource.data.toName == resource.data.toName
+        && request.resource.data.message == resource.data.message
+        && request.resource.data.participants == resource.data.participants
+        && request.resource.data.createdAt == resource.data.createdAt
+        && resource.data.status == "pending"
+        && request.resource.data.status in ["accepted", "rejected"];
+
+      allow delete: if signedIn() && request.auth.uid == resource.data.fromUid;
+    }
+  }
+}

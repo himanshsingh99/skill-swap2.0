@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SkillSwap | Discover students</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="js/students.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Skill<span>Swap</span></a>
+    <nav><a class="active" href="index.html">Discover</a><a href="profile.html">My profile</a><a href="requests.html">Requests</a></nav>
+    <div class="nav-actions"><span id="nav-user" class="muted"></span><a class="button small" id="auth-link" href="login.html">Login</a><button id="logout-btn" class="button small secondary hidden">Logout</button></div>
+  </header>
+  <main class="container">
+    <section class="hero">
+      <div><p class="eyebrow">LEARN TOGETHER, GROW TOGETHER</p><h1>Trade skills.<br><span>Build your future.</span></h1><p class="hero-copy">Find students who can teach what you want to learn—and share what you already know.</p><a class="button" href="profile.html">Set up your profile</a></div>
+      <div class="hero-card"><div class="hero-icon">↗</div><p class="eyebrow">A simple exchange</p><h3>You teach something.<br>You learn something.</h3><p class="muted">Connect with fellow students and arrange a skill session together.</p></div>
+    </section>
+    <section class="section-head"><div><p class="eyebrow">COMMUNITY</p><h2>Discover students</h2><p class="muted">Search by name, course, or skill.</p></div><span id="student-count" class="count-pill">Loading…</span></section>
+    <div class="filters"><input id="search-input" type="search" placeholder="Search Python, design, student name…"><select id="skill-filter"><option value="">All skills</option><option>HTML</option><option>CSS</option><option>JavaScript</option><option>Python</option><option>C++</option><option>Graphic Design</option><option>Video Editing</option></select></div>
+    <div id="page-message" class="notice hidden"></div>
+    <div id="students-grid" class="student-grid"><div class="empty-state">Loading students…</div></div>
+  </main>
+  <footer>SkillSwap · A student-to-student learning community</footer>
+</body></html>
