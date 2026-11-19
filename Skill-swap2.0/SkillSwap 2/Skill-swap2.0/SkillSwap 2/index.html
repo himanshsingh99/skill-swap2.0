@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SkillSwap 2.0 — Discover Students & Swap Skills</title>
+  <meta name="description" content="Peer-to-peer student skill exchange platform. Teach what you know, learn what you need.">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="js/students.js"></script>
+</head>
+<body>
+  <!-- Glassmorphism Sticky Topbar -->
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-dot"></span>
+      Skill<span>Swap</span>
+      <span class="brand-badge">2.0</span>
+    </a>
+
+    <!-- Desktop Navigation Links -->
+    <nav class="nav-links">
+      <a class="active" href="index.html">Discover</a>
+      <a href="profile.html">My Profile</a>
+      <a href="requests.html">
+        Requests
+        <span class="nav-badge nav-pending-count hidden" title="Pending requests"></span>
+      </a>
+    </nav>
+
+    <!-- Topbar Actions -->
+    <div class="nav-actions">
+      <!-- Dark/Light Theme Toggle -->
+      <button type="button" class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle theme">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+
+      <span id="nav-user" class="nav-user-pill hidden"></span>
+      <a class="button small" id="auth-link" href="login.html">Login</a>
+      <button id="logout-btn" class="button small secondary hidden">Logout</button>
+
+      <!-- Mobile Hamburger Button -->
+      <button type="button" class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+    <a href="index.html" class="button secondary" style="justify-content: flex-start;">🔍 Discover Students</a>
+    <a href="profile.html" class="button secondary" style="justify-content: flex-start;">👤 My Profile</a>
+    <a href="requests.html" class="button secondary" style="justify-content: flex-start;">
+      📬 Requests <span class="nav-badge nav-pending-count hidden" style="margin-left:auto;"></span>
+    </a>
+  </div>
+
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div>
+        <p class="eyebrow">🌱 STUDENT SKILL EXCHANGE PLATFORM</p>
+        <h1>Trade skills.<br><span class="gradient-text">Build your future.</span></h1>
+        <p class="hero-copy">
+          Find college peers who can teach what you want to learn — and share what you already know. 100% free, collaborative, and student-powered.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="profile.html">Set Up Your Profile 🚀</a>
+          <a class="button secondary" href="#students-section">Browse Students ↓</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-icon" style="font-size:2rem; margin-bottom:12px;">🤝</div>
+        <p class="eyebrow">A SIMPLE MUTUAL TRADE</p>
+        <h3>You teach a skill.<br>You learn a skill.</h3>
+        <p>Connect with peers, arrange friendly study sessions, and exchange emails once you both agree!</p>
+      </div>
+    </section>
+
+    <!-- Hero Live Stats Strip (Loaded dynamically from Firestore) -->
+    <section class="stats-strip" aria-label="SkillSwap Community Stats">
+      <div class="stat-item">
+        <div class="stat-icon">🎓</div>
+        <div>
+          <div class="stat-number" id="stat-students">…</div>
+          <div class="stat-label">Registered Students</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">💡</div>
+        <div>
+          <div class="stat-number" id="stat-skills">…</div>
+          <div class="stat-label">Unique Skills Offered</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">✨</div>
+        <div>
+          <div class="stat-number" id="stat-connections">…</div>
+          <div class="stat-label">Connections Made</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Student Community Discovery -->
+    <section id="students-section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">COMMUNITY DIRECTORY</p>
+          <h2>Discover Fellow Students</h2>
+          <p class="text-muted" style="margin:0;">Search by student name, course, or any technical/creative skill.</p>
+        </div>
+        <span id="student-count" class="count-pill">Loading students…</span>
+      </div>
+
+      <!-- Filters Wrapper: Search, Dynamic Dropdown & Quick Chips -->
+      <div class="filters-wrapper">
+        <div class="filters-bar">
+          <div class="search-input-wrap">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input id="search-input" type="search" placeholder="Search Python, Figma, React, BCA, student name…" aria-label="Search students by name or skill">
+          </div>
+          <select id="skill-filter" aria-label="Filter by skill">
+            <option value="">All skills</option>
+          </select>
+        </div>
+
+        <!-- Dynamic Quick Skill Chips Container -->
+        <div class="quick-chips-row" id="quick-chips-container"></div>
+      </div>
+
+      <!-- Status Notice fallback -->
+      <div id="page-message" class="notice hidden"></div>
+
+      <!-- Student Grid / Shimmer Loading / Cards -->
+      <div id="students-grid" class="student-grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>SkillSwap 2.0 · Learn Together, Grow Together · Made with ❤️ for Students</p>
+  </footer>
+</body>
+</html>

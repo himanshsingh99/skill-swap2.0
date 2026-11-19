@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skill Exchange Requests | SkillSwap 2.0</title>
+  <meta name="description" content="Manage your incoming and outgoing student skill exchange proposals in real-time.">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="js/requests.js"></script>
+</head>
+<body>
+  <!-- Header / Topbar -->
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-dot"></span>
+      Skill<span>Swap</span>
+      <span class="brand-badge">2.0</span>
+    </a>
+
+    <!-- Desktop Navigation Links -->
+    <nav class="nav-links">
+      <a href="index.html">Discover</a>
+      <a href="profile.html">My Profile</a>
+      <a class="active" href="requests.html">
+        Requests
+        <span class="nav-badge nav-pending-count hidden" title="Pending requests"></span>
+      </a>
+    </nav>
+
+    <div class="nav-actions">
+      <!-- Dark/Light Theme Toggle -->
+      <button type="button" class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle theme">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+
+      <span id="nav-user" class="nav-user-pill hidden"></span>
+      <a class="button small" id="auth-link" href="login.html">Login</a>
+      <button id="logout-btn" class="button small secondary hidden">Logout</button>
+
+      <!-- Mobile Hamburger Button -->
+      <button type="button" class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+    <a href="index.html" class="button secondary" style="justify-content: flex-start;">🔍 Discover Students</a>
+    <a href="profile.html" class="button secondary" style="justify-content: flex-start;">👤 My Profile</a>
+    <a href="requests.html" class="button secondary" style="justify-content: flex-start;">
+      📬 Requests <span class="nav-badge nav-pending-count hidden" style="margin-left:auto;"></span>
+    </a>
+  </div>
+
+  <main class="page-wrap wide">
+    <section class="section-head">
+      <div>
+        <p class="eyebrow">REAL-TIME COLLABORATIONS</p>
+        <h2>Exchange Requests</h2>
+        <p class="text-muted" style="margin:0;">Accept incoming requests from peers or track the status of proposals you sent.</p>
+      </div>
+    </section>
+
+    <div id="page-message" class="notice hidden"></div>
+
+    <!-- Requests Tabs: Received / Sent -->
+    <div class="tabs-nav" role="tablist">
+      <button type="button" class="tab-btn active" id="tab-incoming-btn" role="tab" aria-selected="true">
+        📥 Received Requests
+        <span class="tab-count" id="incoming-tab-count">0</span>
+      </button>
+      <button type="button" class="tab-btn" id="tab-outgoing-btn" role="tab" aria-selected="false">
+        📤 Sent Proposals
+        <span class="tab-count" id="outgoing-tab-count">0</span>
+      </button>
+    </div>
+
+    <!-- Tab Panel: Received Requests -->
+    <section id="incoming-panel">
+      <div id="incoming-requests" class="request-list" aria-live="polite">
+        <div class="empty-state-card">Loading requests…</div>
+      </div>
+    </section>
+
+    <!-- Tab Panel: Sent Requests -->
+    <section id="outgoing-panel" class="hidden">
+      <div id="outgoing-requests" class="request-list" aria-live="polite">
+        <div class="empty-state-card">Loading requests…</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>SkillSwap 2.0 · Safe Peer-to-Peer Learning · Good things grow when shared</p>
+  </footer>
+</body>
+</html>
