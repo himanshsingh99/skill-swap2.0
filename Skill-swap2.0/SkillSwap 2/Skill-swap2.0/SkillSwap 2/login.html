@@ -78,8 +78,17 @@
           </div>
 
           <div class="field">
-            <label for="password">Password</label>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px;">
+              <label for="password" style="margin-bottom:0;">Password</label>
+              <button type="button" id="forgot-password-btn" class="forgot-link">Forgot password?</button>
+            </div>
             <input id="password" type="password" autocomplete="current-password" minlength="6" placeholder="At least 6 characters" required>
+          </div>
+
+          <div id="confirm-password-wrap" class="field hidden">
+            <label for="confirm-password">Confirm Password</label>
+            <input id="confirm-password" type="password" autocomplete="new-password" minlength="6" placeholder="Re-enter your password to confirm">
+            <small id="password-match-msg" class="password-match-indicator hidden"></small>
           </div>
 
           <button id="submit-btn" type="button" class="button" style="width:100%; margin-top:10px;">

@@ -1,10 +1,11 @@
 import { auth, db, googleProvider, firebaseConfigured } from "./firebase-config.js";
 import {
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signInWithPopup, signOut, onAuthStateChanged, updateProfile
+  signInWithPopup, signOut, onAuthStateChanged, updateProfile,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 import {
-  doc, setDoc, serverTimestamp, collection, query, where, onSnapshot
+  doc, setDoc, getDoc, serverTimestamp, collection, query, where, onSnapshot
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 import { initTheme } from "./theme.js";
 import { showToast } from "./ui.js";
@@ -14,14 +15,18 @@ export { auth, db, firebaseConfigured, onAuthStateChanged };
 export function friendlyError(error) {
   const code = error?.code || "";
   const messages = {
-    "auth/email-already-in-use": "This email is already registered. Try logging in.",
+    "auth/email-already-in-use": "This email is already registered. Try logging in instead.",
     "auth/invalid-email": "Please enter a valid email address.",
     "auth/weak-password": "Password must be at least 6 characters long.",
     "auth/invalid-credential": "Incorrect email or password.",
     "auth/wrong-password": "Incorrect email or password.",
-    "auth/user-not-found": "No account found with this email.",
+    "auth/user-not-found": "No account found with this email. Please create an account.",
     "auth/popup-closed-by-user": "Google sign-in popup was closed before completing.",
-    "auth/unauthorized-domain": "Add this domain to Firebase Console → Authentication → Authorized Domains.",
+    "auth/cancelled-popup-request": "Google sign-in was cancelled.",
+    "auth/popup-blocked": "Google sign-in popup was blocked by your browser. Please allow popups for this site.",
+    "auth/unauthorized-domain": "Netlify domain not authorized! Please add your Netlify domain in Firebase Console → Authentication → Settings → Authorized domains.",
+    "auth/missing-email": "Please enter your email address.",
+    "auth/too-many-requests": "Too many failed attempts. Please wait a moment before trying again.",
     "permission-denied": "You do not have permission to perform this action."
   };
   return messages[code] || error?.message || "Something went wrong. Please try again.";
@@ -29,25 +34,29 @@ export function friendlyError(error) {
 
 /**
  * Ensures student documents exist in Firestore:
- * 1. Public document in `students/{uid}` (NO email for privacy)
+ * 1. Public document in `students/{uid}` (NO email for privacy, only initialized if not exists)
  * 2. Private document in `studentsPrivate/{uid}` (contains email, owner-only)
  */
 export async function ensureStudentDocument(user, name = "") {
   if (!user?.uid) return;
-  const profileName = name || user.displayName || (user.email || "").split("@")[0] || "Student";
 
   // 1. Public profile (visible to signed-in students in discovery)
   const studentRef = doc(db, "students", user.uid);
-  await setDoc(studentRef, {
-    uid: user.uid,
-    name: profileName,
-    course: "",
-    bio: "",
-    teach: [],
-    learn: [],
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
-  }, { merge: true });
+  const existingSnap = await getDoc(studentRef);
+
+  if (!existingSnap.exists()) {
+    const profileName = name || user.displayName || (user.email || "").split("@")[0] || "Student";
+    await setDoc(studentRef, {
+      uid: user.uid,
+      name: profileName,
+      course: "",
+      bio: "",
+      teach: [],
+      learn: [],
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+  }
 
   // 2. Private profile (contains email; locked by security rules)
   const privateRef = doc(db, "studentsPrivate", user.uid);
@@ -76,9 +85,17 @@ export async function loginUser({ email, password }) {
 
 export async function googleSignIn() {
   if (!firebaseConfigured) throw new Error("Please configure your Firebase credentials in js/firebase-config.js.");
+  googleProvider.setCustomParameters({ prompt: "select_account" });
   const result = await signInWithPopup(auth, googleProvider);
   await ensureStudentDocument(result.user);
   return result.user;
+}
+
+export async function resetPassword(email) {
+  if (!firebaseConfigured) throw new Error("Please configure your Firebase credentials in js/firebase-config.js.");
+  const cleanEmail = email.trim();
+  if (!cleanEmail) throw new Error("Please enter your email address first.");
+  await sendPasswordResetEmail(auth, cleanEmail);
 }
 
 export async function logoutUser() {

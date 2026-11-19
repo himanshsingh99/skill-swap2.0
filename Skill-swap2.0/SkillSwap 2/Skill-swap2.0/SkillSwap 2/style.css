@@ -1179,6 +1179,39 @@ input:focus, select:focus, textarea:focus {
   padding: 0 12px;
 }
 
+/* Forgot Password Link */
+.forgot-link {
+  background: transparent;
+  border: none;
+  color: var(--brand);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  transition: var(--transition);
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+/* Password Match Indicator */
+.password-match-indicator {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 4px;
+  display: block;
+}
+
+.password-match-indicator.match {
+  color: #10b981;
+}
+
+.password-match-indicator.mismatch {
+  color: var(--accent-red);
+}
+
 /* Back Link */
 .back-link {
   display: inline-flex;
